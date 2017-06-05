@@ -1,68 +1,44 @@
 var todoList = {
   todos: [],
-  displayTodos: function() {
-    if (this.todos.length === 0) {
-      console.log("Your todos is empty");
-    }
-    else {
-      console.log('MyTodos: ');
-      for (var i = 0; i < this.todos.length; i++) {
-        if(this.todos[i].completed === true) {
-          console.log('(x)', this.todos[i].todoText);
-        }else {
-          console.log('()', this.todos[i].todoText);
-        }
-      }
-    }
-  },
   addTodo: function(todoText) {
     this.todos.push({
       todoText: todoText, // first todoText is property of addTodo
       completed: false
-      
     });
-    this.displayTodos();
   },
   changeTodo: function(position, todoText) {
     this.todos[position].todoText = todoText;
-    this.displayTodos();
   },
   deleteTodo: function(position) {
     this.todos.splice(position, 1);
-    this.displayTodos();
   },
   toggleCompleted: function(position) {
     var todo = this.todos[position];
     todo.completed = !todo.completed;
-    this.displayTodos();
   },
-  toggleAll: function(){
-    //initializing the new variable before they use
+  toggleAll: function() {
     var totalTodos = this.todos.length;
     var completedTodos = 0;
-    
-    //Get number of completed todos.
-    for (var i = 0; i < totalTodos; i++) {
-      if (this.todos[i].completed === true){ // comparing 
+
+    this.todos.forEach(function (todo) {
+      if (todo.completed === true) {
         completedTodos++;
       }
-    }
-    
-    //Case 1: if everything is true, make them false
-    if (completedTodos === totalTodos) {
-      //make everything false
-      for ( var i = 0; i < totalTodos; i++) {
-        this.todos[i].completed = false; // = assigning
-      }//this.displayTodos(); we don't need diplay for every case - just at the end
-    }else {
-      //case 2: if some are true, make them all true;
-      for (var i = 0; i < totalTodos; i++){
-        this.todos[i].completed = true;
+    });
+
+    this.todos.forEach(function(todo) {
+      //Case 1: if everything is true, make them false
+      if (completedTodos === totalTodos) {
+        todo.completed = false;
+      //Case 2: if everything is false, make them true
+      }else {
+        todo.completed = true;
       }
-    }
-    this.displayTodos();
+
+
+    });
   }
-  };
+};
 
 //old replace by handlers object
 //accessing to HTML document by creating variable and document.getElementById method
@@ -79,13 +55,11 @@ var todoList = {
 //});
 
 var handlers = {
-  displayTodos: function(){
-    todoList.displayTodos();
-  },
   addTodo: function(){
     var addTodoTextInput = document.getElementById('addTodoTextInput');
     todoList.addTodo(addTodoTextInput.value);
     addTodoTextInput.value = ''; //that make clear the placeholder that typed last time
+    view.displayTodos(); // for display the function everytime on code completion
   },
   changeTodo: function(){
     var changeTodoPositionInput = document.getElementById('changeTodoPositionInput');
@@ -93,36 +67,85 @@ var handlers = {
     todoList.changeTodo(changeTodoPositionInput.valueAsNumber, changeTodoTextInput.value);
     changeTodoPositionInput.value = '';
     changeTodoTextInput.value = '';
+    view.displayTodos();
   },
-  deleteTodo: function(){
-    var deleteTodoPositionInput = document.getElementById('deleteTodoPositionInput');
-    todoList.deleteTodo(deleteTodoPositionInput.valueAsNumber);
-    deleteTodoPositionInput.value = '';
+  deleteTodo: function(position){
+    todoList.deleteTodo(position);
+    view.displayTodos();
   },
   toggleCompleted: function(){
     var toggleCompletedPositionInput = document.getElementById('toggleCompletedPositionInput');
     todoList.toggleCompleted(toggleCompletedPositionInput.valueAsNumber);
     toggleCompletedPositionInput.value = '';
+    view.displayTodos();
   },
   toggleAll: function(){
     todoList.toggleAll();
+    view.displayTodos();
   }
+
 };
 
-var view = {
+var view = {  // creating a view area for user output
   displayTodos: function () {
     var todosUl = document.querySelector('ul');
-    todosUl.innerHTML = '';
-    for (var i = 0; i < todosList.todos.length; i++) {
+    todosUl.innerHTML = ''; //clearing the the last ul list
+    // for (var i = 0; i < todoList.todos.length; i++) {
+    //   var todoLi = document.createElement('li');
+    //   var todo = todoList.todos[i];
+    //     var todoTextWithCompletion = '';
+    //
+    //
+    //     if (todo.completed === true){
+    //       todoTextWithCompletion = '(x) ' + todo.todoText;
+    //     } else {
+    //         todoTextWithCompletion = '( ) ' + todo.todoText;
+    //     }
+    //
+    //     todoLi.id = i; //giving a unique id so that it can modify or delete
+    //     todoLi.textContent = todoTextWithCompletion;
+    //     todoLi.appendChild(this.createDeleteButton());
+    //     todosUl.appendChild(todoLi);
+    // }
+
+    todoList.todos.forEach(function (todo, position) {
       var todoLi = document.createElement('li');
-      todosUl.appendChild(todoLi);
-    }
+      var todoTextWithCompletion = '';
+
+
+      if (todo.completed === true){
+        todoTextWithCompletion = '(x) ' + todo.todoText;
+      } else {
+          todoTextWithCompletion = '( ) ' + todo.todoText;
+      }
+        todoLi.id = position; //giving a unique id so that it can modify or delete
+        todoLi.textContent = todoTextWithCompletion;
+        todoLi.appendChild(this.createDeleteButton());
+        todosUl.appendChild(todoLi);
+      }, this);
+  },
+  createDeleteButton: function () {
+    var deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.className = 'deleteButton';
+    return deleteButton;
+  },
+  setUpEventListeners: function () {
+    var todosUl = document.querySelector('ul');
+
+    todosUl.addEventListener('click', function (event) {
+        //get the element that was clicked on.
+        var elementClicked = event.target;
+        //cjecl of e;ementclicked is a delete button.
+        if (elementClicked.className === 'deleteButton') {
+            //run handlers.deleteTodo(position).
+            handlers.deleteTodo(parseInt(elementClicked.parentNode.id));
+        }
+    });
   }
 };
 
-
-
-
+view.setUpEventListeners();
 
 
 
