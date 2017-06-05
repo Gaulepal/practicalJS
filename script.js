@@ -16,7 +16,6 @@ var todoList = {
     }
   },
   addTodo: function(todoText) {
-    debugger;
     this.todos.push({
       todoText: todoText, // first todoText is property of addTodo
       completed: false
@@ -65,27 +64,61 @@ var todoList = {
   }
   };
 
+//old replace by handlers object
 //accessing to HTML document by creating variable and document.getElementById method
-var displayTodosButton = document.getElementById('displayTodosButton');
+//var displayTodosButton = document.getElementById('displayTodosButton');
 //toggleAllButton
-var toggleAllButton = document.getElementById('toggleAllButton');
+//var toggleAllButton = document.getElementById('toggleAllButton');
 //adding addEventListener so that when click happens we can run the function
-displayTodosButton.addEventListener('click', function(){
-  todoList.displayTodos();
-});
+//displayTodosButton.addEventListener('click', function(){
+//  todoList.displayTodos();
+//});
 //adding addEventListner for toggleAllButton
-toggleAllButton.addEventListener('click', function(){
-  todoList.toggleAll();
-});
+//toggleAllButton.addEventListener('click', function(){
+//  todoList.toggleAll();
+//});
 
+var handlers = {
+  displayTodos: function(){
+    todoList.displayTodos();
+  },
+  addTodo: function(){
+    var addTodoTextInput = document.getElementById('addTodoTextInput');
+    todoList.addTodo(addTodoTextInput.value);
+    addTodoTextInput.value = ''; //that make clear the placeholder that typed last time
+  },
+  changeTodo: function(){
+    var changeTodoPositionInput = document.getElementById('changeTodoPositionInput');
+    var changeTodoTextInput = document.getElementById('changeTodoTextInput');
+    todoList.changeTodo(changeTodoPositionInput.valueAsNumber, changeTodoTextInput.value);
+    changeTodoPositionInput.value = '';
+    changeTodoTextInput.value = '';
+  },
+  deleteTodo: function(){
+    var deleteTodoPositionInput = document.getElementById('deleteTodoPositionInput');
+    todoList.deleteTodo(deleteTodoPositionInput.valueAsNumber);
+    deleteTodoPositionInput.value = '';
+  },
+  toggleCompleted: function(){
+    var toggleCompletedPositionInput = document.getElementById('toggleCompletedPositionInput');
+    todoList.toggleCompleted(toggleCompletedPositionInput.valueAsNumber);
+    toggleCompletedPositionInput.value = '';
+  },
+  toggleAll: function(){
+    todoList.toggleAll();
+  }
+};
 
-
-
-
-
-
-
-
+var view = {
+  displayTodos: function () {
+    var todosUl = document.querySelector('ul');
+    todosUl.innerHTML = '';
+    for (var i = 0; i < todosList.todos.length; i++) {
+      var todoLi = document.createElement('li');
+      todosUl.appendChild(todoLi);
+    }
+  }
+};
 
 
 

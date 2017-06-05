@@ -6,14 +6,55 @@
 	
 </head>
 <body>
-<button id="displayTodosButton">Display Todos</button>  
-<button id ="toggleAllButton">Toggle All</button>
+	<h1>Todo List</h1>
+
+	<!-- FIRST method that is replaced by new attribute onclick event listener.
+	<button id="displayTodosButton">Display Todos</button>  
+	<button id ="toggleAllButton">Toggle All</button> -->
+
+
+	 <!--handlers is object and . to access method/function-->
+	<div>
+		<button id="displayTodos" onclick="handlers.displayTodos()">Display Todo</button>
+		<button onclick="handlers.toggleAll()">Toggle All</button>
+	</div>
+
+	<div>
+		<button onclick="handlers.addTodo()">Add</button>
+		<input id="addTodoTextInput" type="text" placeholder="Please enter something">
+	</div>
+
+	<div>
+		<button id="changeTodos" onclick="handlers.changeTodo()">Change Todo</button>
+		<input id="changeTodoPositionInput" type="number" >
+		<input id="changeTodoTextInput" type="text" >
+	</div>
+
+	<div>
+		<button onclick="handlers.deleteTodo()">Delete Todo</button>
+		<input id="deleteTodoPositionInput" type="number" >
+	</div>
+
+	<div>
+		<button onclick="handlers.toggleCompleted()">Toggle Completed</button>
+		<input id="toggleCompletedPositionInput" type="number">
+	</div>
+
+	<ul>
+		
+	</ul>
 
 
 
 
 
 
-<script src = "script.js"> </script>
+
+
+
+
+
+
+	<script src = "script.js"> </script>
 </body>
 </html>
